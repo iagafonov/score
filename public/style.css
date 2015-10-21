@@ -1,0 +1,76 @@
+body, html {
+    margin: 0;
+    font-family: monospace;
+}
+
+.score-number, .score-divider {
+    display: inline-block;
+    font-size: 60vh;
+    line-height: 60vh;
+}
+
+.score-header {
+    position: relative;
+    height: 20vh;
+    font-size: 10vh;
+    line-height: 20vh;
+    text-align: center;
+}
+
+.score-player {
+    display: inline-block;
+}
+
+.score-vs {
+    left: 50%;
+    margin-left: -0.45em;
+    position: absolute;
+}
+
+.score-number, .score-player {
+    width: 47%;
+}
+
+.score-divider {
+    margin-left: -0.25em;
+    position: absolute;
+    left: 50%;
+}
+
+.score-container {
+    position: relative;
+    text-align: center;
+}
+
+.score-footer {
+    position: relative;
+    height: 20vh;
+    text-align: center;
+    font-size: 10vh;
+    line-height: 20vh;
+}
+
+.score-pass {
+    text-decoration: underline;
+}
+
+.score-button {
+    height: 10vh;
+    line-height: 8vh;
+    font-size: 8vh;
+    padding: 1vh 2vh;
+    border-color: #868686;
+    border-width: 1px;
+    border-radius: 1vh;
+}
+
+.score-input {
+    font-size: 8vh;
+    border-color: #868686;
+    border-width: 1px;
+    border-radius: 1vh;
+}
+
+.s-hide {
+    display: none;
+}

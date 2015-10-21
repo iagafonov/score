@@ -1,0 +1,12 @@
+{
+  "name": "score",
+  "version": "0.0.1",
+  "description": "ping-pong score realtime web application with socket.io and mongodb",
+  "dependencies": {
+    "express": "4",
+    "socket.io": "1",
+    "mongodb": "2",
+    "monk": "1",
+    "q": "1"
+  }
+}

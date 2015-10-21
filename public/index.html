@@ -1,0 +1,104 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title></title>
+    <link rel="stylesheet" href="/style.css">
+    <script src="/s-sync.js"></script>
+    <script src="/socket.io/socket.io.js"></script>
+</head>
+<body s-show="initialized" class="s-hide">
+<div s-show="gameStarted">
+    <div class="score-header">
+        <span class="score-vs">vs</span>
+        <span class="score-player" s-text="playerLeftName"></span>
+        <span class="score-player" s-text="playerRightName"></span>
+    </div>
+    <div class="score-container">
+        <span class="score-divider">|</span>
+        <span class="score-number" s-text="left" s-attr.class="classLeft">0</span>
+        <span class="score-number" s-text="right" s-attr.class="classRight">0</span>
+    </div>
+    <div class="score-footer">
+        Игра до: <span s-text="scoreLimit"></span>, подач: <span s-text="feeds"></span>
+    </div>
+</div>
+<div s-hide="gameStarted">
+    <div class="score-header" s-hide="admin">
+        Игра не начата
+    </div>
+    <div class="score-header" s-show="admin">
+        <span class="score-vs">vs</span>
+        <div class="score-player">
+            <select class="score-input" s-model="playerLeftId" s-options="players:_id:name" s-show="admin"></select>
+        </div>
+        <div class="score-player">
+            <select class="score-input" s-model="playerRightId" s-options="players:_id:name" s-show="admin"></select>
+        </div>
+    </div>
+    <div class="score-container">
+        <select class="score-input" s-model="gameTypeId" s-options="gameTypes:_id:name" s-show="admin"></select>
+        <button class="score-button" s-on.click="start">Начать игру</button>
+    </div>
+</div>
+<script>
+    "use strict";
+
+    var socket = io();
+
+    var state = new SSync({
+        data: {},
+        methods: {
+            start: function () {
+                socket.emit('start', {
+                    playerLeftId: this.data.playerLeftId,
+                    playerRightId: this.data.playerRightId,
+                    gameTypeId: this.data.gameTypeId
+                });
+            }
+        }
+    });
+
+    state.compile('body');
+
+    document.addEventListener('keydown', function (e) {
+        if (e.keyCode === 37 /* left */) {
+            socket.emit('left', {count: e.ctrlKey ? -1 : +1});
+        } else if (e.keyCode === 39 /* right */) {
+            socket.emit('right', {count: e.ctrlKey ? -1 : +1});
+        } else if (e.keyCode === 38 /* up */) {
+            socket.emit('first', {});
+        } else if (e.keyCode === 27 /* esc */) {
+            socket.emit('abort', {});
+        }
+    });
+
+    socket.on('game', function (msg) {
+        for (var key in msg) if (msg.hasOwnProperty(key)) {
+            state.data[key] = msg[key];
+        }
+
+        if (msg.pass == 0) {
+            state.data.classLeft = 'score-pass';
+            state.data.classRight = null;
+        } else if (msg.pass == 1) {
+            state.data.classLeft = null;
+            state.data.classRight = 'score-pass'
+        }
+
+        state.data.initialized = true;
+    });
+
+    socket.on('app-start', function () {
+        socket.emit('get', {});
+    });
+
+    socket.on('finish', function (game) {
+        state.winnerName = game.winner.name;
+    });
+
+    socket.emit('get', {});
+
+</script>
+</body>
+</html>
